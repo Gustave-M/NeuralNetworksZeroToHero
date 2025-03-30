@@ -1,5 +1,7 @@
 
-from micrograd.engine import Value
+#from micrograd.engine import Value
+from BuildingMicrograd.structures import Value
+from BuildingMicrograd.visualization_functions import *
 
 a = Value(-4.0)
 b = Value(2.0)
@@ -18,4 +20,4 @@ g.backward()
 print(f'{a.grad:.4f}') # prints 138.8338, i.e. the numerical value of dg/da
 print(f'{b.grad:.4f}') # prints 645.5773, i.e. the numerical value of dg/db
 
-
+draw_dot(o)

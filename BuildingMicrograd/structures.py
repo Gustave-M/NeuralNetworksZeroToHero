@@ -1,7 +1,5 @@
 import math
 import numpy as np
-import matplotlib.pyplot as plt
-
 from typing import Self
 
 class Value:
@@ -13,11 +11,10 @@ class Value:
         self._op = _op
         self.label = label
     
-    def __repr__(self:Self)->None:
+    def __repr__(self:Self)->str:
         return f"Value(data={self.data})"
     
-    
-    def __add__(self:Self, other)->Self:
+    def __add__(self:Self, other):
         other = other if isinstance(other, Value) else Value(other)
         out = Value(self.data + other.data, (self, other), '+')
         def _backward():
@@ -26,7 +23,7 @@ class Value:
         out._backward = _backward
         return out
     
-    def __mul__(self:Self, other)->Self:
+    def __mul__(self:Self, other):
         other = other if isinstance(other, Value) else Value(other)
         out = Value(self.data * other.data, (self, other), '*')
         def _backward():
@@ -41,23 +38,20 @@ class Value:
     def __radd__(self:Self, other)->Self:
         return self + other
     
-    def exp(self:Self)->Self:
+    def exp(self:Self):
         x = self.data
         out = Value(math.e**x, (self, ), 'exp')
         def _backward():
             self.grad += out.data * out.grad
-        out.backward = _backward
-
+        out._backward = _backward
         return out
     
-    def __pow__(self:Self, other)->Self:
+    def __pow__(self:Self, other):
         assert isinstance(other, (int, float)), "Power must be int or float for the moment ..."
         out = Value(self.data**other, (self, ), f'** {other}')
-
         def _backward():
             self.grad += other * self.data**(other - 1) * out.grad
         out._backward = _backward
-
         return out
 
     def __truediv__(self:Self, other)->Self:
@@ -69,7 +63,7 @@ class Value:
     def __sub__(self:Self, other:Self)->Self:
         return self + (-other)
     
-    def tanh(self:Self)->Self:
+    def tanh(self:Self):
         x = self.data
         t = (math.exp(2*x) - 1)/(math.exp(2*x) + 1)
         out = Value(t, (self, ), 'tanh')
