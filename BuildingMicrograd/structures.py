@@ -10,6 +10,9 @@ class Value:
         self._prev = set(_children)
         self._op = _op
         self.label = label
+
+    def reset_grad(self:Self)->None:
+        self.grad = 0.0
     
     def __repr__(self:Self)->str:
         return f"Value(data={self.data})"
@@ -103,6 +106,10 @@ class Neuron:
     
     def parameters(self:Self):
         return self.w + [self.b]
+    
+    def reset_grad(self:Self)->None:
+        for p in self.parameters():
+            p.reset_grad()
 
 class Layer:
 
@@ -115,6 +122,10 @@ class Layer:
     
     def parameters(self:Self):
         return [p for n in self.neurons for p in n.parameters()]
+
+    def reset_grad(self:Self)->None:
+        for n in self.neurons:
+            n.reset_grad()
 
 class MLP:
     
@@ -129,5 +140,10 @@ class MLP:
     
     def parameters(self:Self):
         return [p for layer in self.layers for p in layer.parameters()]
+    
+    def reset_grad(self:Self)->None:
+        for layer in self.layers:
+            layer.reset_grad()
+
 
 
